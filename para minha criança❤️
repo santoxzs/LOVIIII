@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Para Minha Criança ❤️</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #b22222;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 90%;
+      color: black;
+      user-select: none;
+    }
+
+    .polaroid {
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .polaroid img {
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+      animation: pulse 3s infinite;
+      display: block;
+      user-select: none;
+    }
+
+    .caption {
+      font-size: 1em;
+      margin-top: 10px;
+      color: #b22222;
+      user-select: none;
+    }
+
+    .text-below {
+      font-size: 1.4em;
+      color: black;
+      text-shadow: none;
+      user-select: text;
+      line-height: 1.4em;
+    }
+
+    #audioContainer {
+      margin-top: 20px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="heartCanvas"></canvas>
+
+  <div class="container" role="main">
+    <div class="polaroid">
+      <img id="mainImage" src="https://i.postimg.cc/HVxrX9W2/foto-pb.jpg" alt="Foto do casal - preto e branco" title="Clique na foto e veja a mágica ✨" />
+      <div class="caption">Clique na foto e veja a mágica ✨</div>
+    </div>
+    <div class="text-below" aria-label="Mensagem para minha criança">
+      você na minha vida é tão especial assim como o impala é especial para o Dean, você chegou na minha vida e a mudou por completo, meus dias passaram a ter mais cor e a minha vida passou a ser mais feliz, não pude comprar um presente mas fiz isso para você. saiba que eu te amo muito meu amor da minha vida 🩷✨️
+    </div>
+    <div id="audioContainer">
+      <audio controls id="audioPlayer" preload="none" aria-label="Player de música romântica">
+        <source src="https://cdn.jsdelivr.net/gh/santoxzs/mp3storage/sweater-weather.mp3" type="audio/mpeg" />
+        Seu navegador não suporta o elemento de áudio.
+      </audio>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Função para desenhar corações
+    function drawHeart(x, y, size, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size, size);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(0, -3, -3, -3, -3, 0);
+      ctx.bezierCurveTo(-3, 3, 0, 5, 0, 6);
+      ctx.bezierCurveTo(0, 5, 3, 3, 3, 0);
+      ctx.bezierCurveTo(3, -3, 0, -3, 0, 0);
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Array para corações da chuva
+    let hearts = [];
+
+    // Criar um coração novo
+    function createHeart() {
+      return {
+        x: Math.random() * canvas.width,
+        y: -20,
+        size: Math.random() * 0.8 + 0.7, // corações maiores
+        dy: Math.random() * 1.5 + 1.5,
+        color: 'pink',
+      };
+    }
+
+    // Animar chuva de corações
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Adiciona 3 corações por frame para uma chuva densa
+      for (let i = 0; i < 3; i++) {
+        hearts.push(createHeart());
+      }
+
+      hearts.forEach((heart, i) => {
+        heart.y += heart.dy;
+        drawHeart(heart.x, heart.y, heart.size, heart.color);
+        if (heart.y > canvas.height + 20) {
+          hearts.splice(i, 1);
+        }
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    // Troca da imagem PB para colorida e vice-versa
+    const mainImage = document.getElementById('mainImage');
+    const pbSrc = "https://i.postimg.cc/HVxrX9W2/foto-pb.jpg";
+    const colorSrc = "https://i.postimg.cc/s11zJ6Sv/foto-colorida.jpg";
+    let isPB = true;
+
+    mainImage.addEventListener('click', () => {
+      if (isPB) {
+        mainImage.src = colorSrc;
+        mainImage.alt = "Foto do casal colorida";
+      } else {
+        mainImage.src = pbSrc;
+        mainImage.alt = "Foto do casal - preto e branco";
+      }
+      isPB = !isPB;
+    });
+
+    window.onload = () => {
+      animate();
+    };
+  </script>
+</body>
+</html>
